@@ -1,11 +1,11 @@
 sed_simplified: main.o methods.o
-	g++ main.o methods.o -o sed_simplified 
+	gcc main.o methods.o -o sed_simplified 
 
 main.o: main.c
-	g++ -c main.c
+	gcc -c main.c
 
 methods.o: methods.c
-	g++ -c methods.c
+	gcc -c methods.c
 
 # out:
 # 	mkdir out
