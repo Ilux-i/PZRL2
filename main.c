@@ -1,60 +1,52 @@
-// -r замена текста на новый
-// -d удаление текста
-// -i -f добавить текст в начало
-// -f -b добавить текст в конец
 
+#include "ssed.h"
+#include "files.h"
+
+#include <string.h>
+#include <stdarg.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include "methods.h"
 
-// #define FILE "data.txt"
-// #define MESS "Hello METANIT.COM!\nAn apple a day keeps the doctor away\n"
+char *program_name;
 
-  
-int main(int argc, const char *argv[])
-{
-
-    int count = 0;
-    while(argv[count] != '\0'){
-        count++;
-    }
-
-    // char file[] = argv[1];
-    char file[] = "data.txt";
-    char flag_1, flag_2;
-
-    if(count > 3){
-        flag_1 = argv[2][1];
-
-        switch(flag_1){
-        case 'r':
-            Replace(file, argv[3], argv[4]);
-            break;
-
-        case 'd':
-            Delete(file, argv[3]);
-            break;
-
-        case 'i':
-            flag_2 = argv[3][1];
-            Insert(file, flag_2, argv[4]);
-            break;
-
-        default:
-            printf("Не правильная запись\n");
-            break;
+// Проверки на ошибку пользовательского ввода и распределение на запрсы по флагам
+int main(int argc, char *args[]) {
+    program_name = args[0];
+    if (argc > 2) {
+        if (!is_file_exist(args[1]))
+            printf("File not exist: %s\n", args[1]);
+        if (is_directory(args[1]))
+            printf("It is directory: %s\n", args[1]);
+        
+        if (argc == 3) {  /*       ./ssed file cmd         */
+            // sed_parse_cmd(args[1], args[2]);
+            printf("It's regex function\n");
+        } else {          /*  ./ssed file -flag pattern... */
+            if (args[2][0] != '-') {
+                // help_message();
+                printf("Flag not found\n");
+            }
+            if (strcmp(args[2], "-r") == 0) {
+                if (argc != 5)
+                    printf("Replace must be: %s -r old new\n", program_name);
+                sed_replace(args[1], args[3], args[4]);
+            } else if (strcmp(args[2], "-d") == 0) {
+                if (argc != 4)
+                    printf("Delete must be: %s -d pattern\n", program_name);
+                sed_delete(args[1], args[3]);
+            } else if (strcmp(args[2], "-i") == 0) {
+                if (argc != 5)
+                    printf("Insert must be: %s -i -f/b text\n", program_name);
+                
+                if (strcmp(args[3], "-b") == 0) {
+                    sed_add_suffix(args[1], args[4]);
+                } else if (strcmp(args[3], "-f") == 0) {
+                    sed_add_prefix(args[1], args[4]);
+                } else {
+                    printf("Unknown flag: %s\n", args[3]);    
+                }
+            } else {
+                printf("Unknown flag: %s\n", args[2]);
+            }
         }
-
-    } else if(count == 5){
-
-        printf("Регулярные выражения\n");
-
-    } else {
-
-        printf("Не правильная запись\n");
-
     }
-    
-    return 0;
 }
-  

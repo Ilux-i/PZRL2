@@ -1,14 +1,17 @@
-sed_simplified: main.o methods.o
-	gcc main.o methods.o -o sed_simplified 
+sed_simplified: main.o files.o ssed.o
+	gcc main.o ssed.o files.o -o sed_simplified 
 
 main.o: main.c
-	gcc -c main.c
+	gcc -c main.c -o main.o
 
-methods.o: methods.c
-	gcc -c methods.c
+files.o: files.c
+	gcc -c files.c -o files.o
+
+ssed.o: ssed.c
+	gcc -c ssed.c -o ssed.o
 
 # out:
 # 	mkdir out
 
 clean:
-	rm -rf *o sed_simplified
+	rm -rf *o 
